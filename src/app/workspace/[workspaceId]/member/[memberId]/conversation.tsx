@@ -1,6 +1,5 @@
 import { Loader } from "lucide-react";
 
-
 import { useGetMember } from "@/features/members/api/use-get-member";
 import { useGetMessages } from "@/features/messages/api/use-get-messages";
 
@@ -14,17 +13,20 @@ import { ChatInput } from "./chat-input";
 import { Id } from "../../../../../../convex/_generated/dataModel";
 
 interface ConversationProps {
-  id: Id<"conversations">;
-};
+  conversationId: Id<"conversations">;
+  channelId: Id<"channels">; // Assuming you also need the channelId
+}
 
-export const Conversation = ({ id }: ConversationProps) => {
+export const Conversation = ({ conversationId, channelId }: ConversationProps) => {
   const memberId = useMemberId();
-
   const { onOpenProfile } = usePanel();
 
   const { data: member, isLoading: memberLoading } = useGetMember({ id: memberId });
+  
+  // Pass both conversationId and channelId to useGetMessages
   const { results, status, loadMore } = useGetMessages({
-    conversationId: id,
+    conversationId,
+    channelId,
   });
 
   if (memberLoading || status === "LoadingFirstPage") {
@@ -32,7 +34,7 @@ export const Conversation = ({ id }: ConversationProps) => {
       <div className="h-full flex items-center justify-center">
         <Loader className="size-6 animate-spin text-muted-foreground" />
       </div>
-    )
+    );
   }
 
   return (
@@ -53,7 +55,7 @@ export const Conversation = ({ id }: ConversationProps) => {
       />
       <ChatInput
         placeholder={`Message ${member?.user.name}`}
-        conversationId={id}
+        conversationId={conversationId}
       />
     </div>
   );

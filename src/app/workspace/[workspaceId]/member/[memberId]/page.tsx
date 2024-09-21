@@ -10,15 +10,15 @@ import { useMemberId } from "@/hooks/use-member-id";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
 import { Conversation } from "./conversation";
-
 import { Id } from "../../../../../../convex/_generated/dataModel";
+import { useChannelId } from "@/hooks/use-channel-id";
 
 const MemberIdPage = () => {
   const memberId = useMemberId();
   const workspaceId = useWorkspaceId();
+  const channelId=useChannelId();
 
   const [conversationId, setConversationId] = useState<Id<"conversations"> | null>(null);
-
   const { mutate, isPending } = useCreateOrGetConversation();
 
   useEffect(() => {
@@ -54,7 +54,10 @@ const MemberIdPage = () => {
     );
   }
 
-  return <Conversation id={conversationId} />
+  return <Conversation conversationId={conversationId} channelId={channelId} />
 };
  
 export default MemberIdPage;
+
+
+
